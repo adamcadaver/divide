@@ -2,7 +2,7 @@ import Cocoa
 import Carbon.HIToolbox
 
 /// A key + Carbon modifier-flag combination, persisted as a global hotkey binding.
-struct KeyCombo: Codable, Equatable {
+struct KeyCombo: Codable, Equatable, Hashable {
     var keyCode: UInt32
     var modifiers: UInt32 // bitmask of HotKeyModifier values
 
@@ -48,6 +48,7 @@ enum ShortcutAction: String, CaseIterable, Codable, Hashable {
     case leftHalf, rightHalf, topHalf, bottomHalf
     case maximize, center
     case topLeft, topRight, bottomLeft, bottomRight
+    case leftThird, middleThird, rightThird
 
     var title: String {
         switch self {
@@ -62,6 +63,9 @@ enum ShortcutAction: String, CaseIterable, Codable, Hashable {
         case .topRight: return "Top-Right Quarter"
         case .bottomLeft: return "Bottom-Left Quarter"
         case .bottomRight: return "Bottom-Right Quarter"
+        case .leftThird: return "Left Third"
+        case .middleThird: return "Middle Third"
+        case .rightThird: return "Right Third"
         }
     }
 
@@ -79,6 +83,9 @@ enum ShortcutAction: String, CaseIterable, Codable, Hashable {
         case .topRight: return .topRight
         case .bottomLeft: return .bottomLeft
         case .bottomRight: return .bottomRight
+        case .leftThird: return .leftThird
+        case .middleThird: return .middleThird
+        case .rightThird: return .rightThird
         }
     }
 
@@ -90,12 +97,15 @@ enum ShortcutAction: String, CaseIterable, Codable, Hashable {
         case .rightHalf: return KeyCombo(keyCode: UInt32(kVK_RightArrow), modifiers: mod)
         case .topHalf: return KeyCombo(keyCode: UInt32(kVK_UpArrow), modifiers: mod)
         case .bottomHalf: return KeyCombo(keyCode: UInt32(kVK_DownArrow), modifiers: mod)
-        case .maximize: return KeyCombo(keyCode: UInt32(kVK_Return), modifiers: mod)
+        case .maximize: return KeyCombo(keyCode: UInt32(kVK_Space), modifiers: mod)
         case .center: return KeyCombo(keyCode: UInt32(kVK_ANSI_C), modifiers: mod)
         case .topLeft: return KeyCombo(keyCode: UInt32(kVK_ANSI_U), modifiers: mod)
         case .topRight: return KeyCombo(keyCode: UInt32(kVK_ANSI_I), modifiers: mod)
         case .bottomLeft: return KeyCombo(keyCode: UInt32(kVK_ANSI_J), modifiers: mod)
         case .bottomRight: return KeyCombo(keyCode: UInt32(kVK_ANSI_K), modifiers: mod)
+        case .leftThird: return KeyCombo(keyCode: UInt32(kVK_ANSI_1), modifiers: mod)
+        case .middleThird: return KeyCombo(keyCode: UInt32(kVK_ANSI_2), modifiers: mod)
+        case .rightThird: return KeyCombo(keyCode: UInt32(kVK_ANSI_3), modifiers: mod)
         }
     }
 }

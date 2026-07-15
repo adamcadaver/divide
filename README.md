@@ -42,7 +42,8 @@ Divide lives in the menu bar (a grid icon). Click it for the menu, or use these 
 | `⌃⌥↑` / `⌃⌥↓` | Snap to top / bottom half |
 | `⌃⌥U` / `⌃⌥I` | Snap to top-left / top-right quarter |
 | `⌃⌥J` / `⌃⌥K` | Snap to bottom-left / bottom-right quarter |
-| `⌃⌥Return` | Maximize |
+| `⌃⌥1` / `⌃⌥2` / `⌃⌥3` | Snap to left / middle / right third |
+| `⌃⌥Space` | Maximize |
 | `⌃⌥C` | Center (2/3 screen size) |
 
 ### Grid overlay
@@ -105,8 +106,18 @@ after a HUD resize" behavior: it drives `OverlayController` with fake dependenci
 resizing a window is always followed by a re-activate/raise call on that same window. If that
 behavior ever regresses, this test fails.
 
+## Icon
+
+`Resources/AppIcon.icns` (black rounded square, white ÷) is what shows up in Finder, the Dock, and
+the Accessibility permissions list. It's a checked-in generated asset — regenerate it with:
+
+```bash
+swift Scripts/generate_icon.swift
+```
+
+The menu-bar status item uses the same ÷ mark, via the SF Symbol `"divide"`.
+
 ## Known limitations (v1)
 
 - Grid density is fixed at 6×6 (edit `GridView.columns`/`rows` to change, then rebuild).
-- No custom app icon yet (uses the default).
 - Shortcut key names in Preferences assume a US keyboard layout.

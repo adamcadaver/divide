@@ -1,9 +1,10 @@
 import Cocoa
 
-enum Zone {
+enum Zone: Equatable {
     case leftHalf, rightHalf, topHalf, bottomHalf
     case maximize, center
     case topLeft, topRight, bottomLeft, bottomRight
+    case leftThird, middleThird, rightThird
 }
 
 enum Layout {
@@ -32,6 +33,12 @@ enum Layout {
             return CGRect(x: vf.minX, y: vf.minY, width: vf.width / 2, height: vf.height / 2)
         case .bottomRight:
             return CGRect(x: vf.midX, y: vf.minY, width: vf.width / 2, height: vf.height / 2)
+        case .leftThird:
+            return CGRect(x: vf.minX, y: vf.minY, width: vf.width / 3, height: vf.height)
+        case .middleThird:
+            return CGRect(x: vf.minX + vf.width / 3, y: vf.minY, width: vf.width / 3, height: vf.height)
+        case .rightThird:
+            return CGRect(x: vf.minX + vf.width * 2 / 3, y: vf.minY, width: vf.width / 3, height: vf.height)
         }
     }
 }

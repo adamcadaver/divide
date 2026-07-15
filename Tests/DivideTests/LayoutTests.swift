@@ -39,4 +39,30 @@ final class LayoutTests: XCTestCase {
         let union = tl.union(tr).union(bl).union(br)
         XCTAssertEqual(union, vf)
     }
+
+    func testThirds() {
+        let thirdWidth = vf.width / 3
+        XCTAssertEqual(Layout.frame(for: .leftThird, visibleFrame: vf),
+                       CGRect(x: vf.minX, y: vf.minY, width: thirdWidth, height: vf.height))
+        XCTAssertEqual(Layout.frame(for: .middleThird, visibleFrame: vf),
+                       CGRect(x: vf.minX + thirdWidth, y: vf.minY, width: thirdWidth, height: vf.height))
+        XCTAssertEqual(Layout.frame(for: .rightThird, visibleFrame: vf),
+                       CGRect(x: vf.minX + vf.width * 2 / 3, y: vf.minY, width: thirdWidth, height: vf.height))
+    }
+
+    func testThirdsAreOrderedLeftToRightAndTileTheScreen() {
+        let left = Layout.frame(for: .leftThird, visibleFrame: vf)
+        let middle = Layout.frame(for: .middleThird, visibleFrame: vf)
+        let right = Layout.frame(for: .rightThird, visibleFrame: vf)
+
+        XCTAssertLessThan(left.minX, middle.minX)
+        XCTAssertLessThan(middle.minX, right.minX)
+        XCTAssertEqual(left.width, middle.width, accuracy: 0.001)
+        XCTAssertEqual(middle.width, right.width, accuracy: 0.001)
+
+        let union = left.union(middle).union(right)
+        XCTAssertEqual(union.minX, vf.minX, accuracy: 0.001)
+        XCTAssertEqual(union.maxX, vf.maxX, accuracy: 0.001)
+        XCTAssertEqual(union.height, vf.height, accuracy: 0.001)
+    }
 }

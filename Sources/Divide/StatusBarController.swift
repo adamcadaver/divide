@@ -15,7 +15,11 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         super.init()
 
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "square.grid.3x3.fill", accessibilityDescription: "Divide")
+            let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
+            let image = NSImage(systemSymbolName: "divide", accessibilityDescription: "Divide")?
+                .withSymbolConfiguration(config)
+            image?.isTemplate = true
+            button.image = image
         }
 
         let menu = NSMenu()

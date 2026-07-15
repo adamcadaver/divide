@@ -15,6 +15,7 @@ mkdir -p "$APP_DIR/Contents/Resources"
 
 cp ".build/release/Divide" "$APP_DIR/Contents/MacOS/Divide"
 cp "Resources/Info.plist" "$APP_DIR/Contents/Info.plist"
+cp "Resources/AppIcon.icns" "$APP_DIR/Contents/Resources/AppIcon.icns"
 
 echo "Ad-hoc code signing (required for Apple Silicon to run the binary)…"
 codesign --force --deep --sign - "$APP_DIR"
