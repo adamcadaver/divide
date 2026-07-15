@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:divide}",
+            "name": "Debug Divide",
+            "target": "Divide",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug Divide"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:divide}",
+            "name": "Release Divide",
+            "target": "Divide",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release Divide"
+        }
+    ]
+}
