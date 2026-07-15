@@ -5,6 +5,7 @@ enum Zone: Equatable {
     case maximize, center
     case topLeft, topRight, bottomLeft, bottomRight
     case leftThird, middleThird, rightThird
+    case leftTwoThirds, rightTwoThirds
 }
 
 enum Layout {
@@ -39,6 +40,10 @@ enum Layout {
             return CGRect(x: vf.minX + vf.width / 3, y: vf.minY, width: vf.width / 3, height: vf.height)
         case .rightThird:
             return CGRect(x: vf.minX + vf.width * 2 / 3, y: vf.minY, width: vf.width / 3, height: vf.height)
+        case .leftTwoThirds:
+            return CGRect(x: vf.minX, y: vf.minY, width: vf.width * 2 / 3, height: vf.height)
+        case .rightTwoThirds:
+            return CGRect(x: vf.minX + vf.width / 3, y: vf.minY, width: vf.width * 2 / 3, height: vf.height)
         }
     }
 }

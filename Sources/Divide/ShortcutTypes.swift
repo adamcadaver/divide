@@ -49,6 +49,7 @@ enum ShortcutAction: String, CaseIterable, Codable, Hashable {
     case maximize, center
     case topLeft, topRight, bottomLeft, bottomRight
     case leftThird, middleThird, rightThird
+    case leftTwoThirds, rightTwoThirds
 
     var title: String {
         switch self {
@@ -66,6 +67,8 @@ enum ShortcutAction: String, CaseIterable, Codable, Hashable {
         case .leftThird: return "Left Third"
         case .middleThird: return "Middle Third"
         case .rightThird: return "Right Third"
+        case .leftTwoThirds: return "Left Two-Thirds"
+        case .rightTwoThirds: return "Right Two-Thirds"
         }
     }
 
@@ -86,6 +89,8 @@ enum ShortcutAction: String, CaseIterable, Codable, Hashable {
         case .leftThird: return .leftThird
         case .middleThird: return .middleThird
         case .rightThird: return .rightThird
+        case .leftTwoThirds: return .leftTwoThirds
+        case .rightTwoThirds: return .rightTwoThirds
         }
     }
 
@@ -106,6 +111,8 @@ enum ShortcutAction: String, CaseIterable, Codable, Hashable {
         case .leftThird: return KeyCombo(keyCode: UInt32(kVK_ANSI_1), modifiers: mod)
         case .middleThird: return KeyCombo(keyCode: UInt32(kVK_ANSI_2), modifiers: mod)
         case .rightThird: return KeyCombo(keyCode: UInt32(kVK_ANSI_3), modifiers: mod)
+        case .leftTwoThirds: return KeyCombo(keyCode: UInt32(kVK_ANSI_4), modifiers: mod)
+        case .rightTwoThirds: return KeyCombo(keyCode: UInt32(kVK_ANSI_5), modifiers: mod)
         }
     }
 }

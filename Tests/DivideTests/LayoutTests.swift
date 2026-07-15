@@ -65,4 +65,24 @@ final class LayoutTests: XCTestCase {
         XCTAssertEqual(union.maxX, vf.maxX, accuracy: 0.001)
         XCTAssertEqual(union.height, vf.height, accuracy: 0.001)
     }
+
+    func testTwoThirds() {
+        let twoThirdsWidth = vf.width * 2 / 3
+        XCTAssertEqual(Layout.frame(for: .leftTwoThirds, visibleFrame: vf),
+                       CGRect(x: vf.minX, y: vf.minY, width: twoThirdsWidth, height: vf.height))
+        XCTAssertEqual(Layout.frame(for: .rightTwoThirds, visibleFrame: vf),
+                       CGRect(x: vf.minX + vf.width / 3, y: vf.minY, width: twoThirdsWidth, height: vf.height))
+    }
+
+    func testTwoThirdsShareTheSameThirdBoundaryAsTheThirds() {
+        // Left-two-thirds should end exactly where right-third begins, and
+        // right-two-thirds should begin exactly where left-third ends.
+        let leftTwoThirds = Layout.frame(for: .leftTwoThirds, visibleFrame: vf)
+        let rightThird = Layout.frame(for: .rightThird, visibleFrame: vf)
+        XCTAssertEqual(leftTwoThirds.maxX, rightThird.minX, accuracy: 0.001)
+
+        let rightTwoThirds = Layout.frame(for: .rightTwoThirds, visibleFrame: vf)
+        let leftThird = Layout.frame(for: .leftThird, visibleFrame: vf)
+        XCTAssertEqual(rightTwoThirds.minX, leftThird.maxX, accuracy: 0.001)
+    }
 }

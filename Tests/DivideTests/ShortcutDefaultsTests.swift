@@ -26,4 +26,14 @@ final class ShortcutDefaultsTests: XCTestCase {
         XCTAssertEqual(ShortcutAction.middleThird.zone, .middleThird)
         XCTAssertEqual(ShortcutAction.rightThird.zone, .rightThird)
     }
+
+    func testTwoThirdsDefaultToNumberKeysFourAndFive() {
+        XCTAssertEqual(ShortcutAction.leftTwoThirds.defaultCombo.displayString, "\u{2303}\u{2325}4")
+        XCTAssertEqual(ShortcutAction.rightTwoThirds.defaultCombo.displayString, "\u{2303}\u{2325}5")
+    }
+
+    func testTwoThirdsMapToTheCorrespondingZones() {
+        XCTAssertEqual(ShortcutAction.leftTwoThirds.zone, .leftTwoThirds)
+        XCTAssertEqual(ShortcutAction.rightTwoThirds.zone, .rightTwoThirds)
+    }
 }

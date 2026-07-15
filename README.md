@@ -43,6 +43,7 @@ Divide lives in the menu bar (a grid icon). Click it for the menu, or use these 
 | `⌃⌥U` / `⌃⌥I` | Snap to top-left / top-right quarter |
 | `⌃⌥J` / `⌃⌥K` | Snap to bottom-left / bottom-right quarter |
 | `⌃⌥1` / `⌃⌥2` / `⌃⌥3` | Snap to left / middle / right third |
+| `⌃⌥4` / `⌃⌥5` | Snap to left / right two-thirds |
 | `⌃⌥Space` | Maximize |
 | `⌃⌥C` | Center (2/3 screen size) |
 
