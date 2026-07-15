@@ -117,8 +117,11 @@ final class OverlayController {
     }
 
     static func screenUnderMouse() -> NSScreen? {
-        let mouseLocation = NSEvent.mouseLocation
-        return NSScreen.screens.first { NSMouseInRect(mouseLocation, $0.frame, false) }
+        let screens = NSScreen.screens
+        guard let index = ScreenSelection.indexOfFrame(containing: NSEvent.mouseLocation, in: screens.map(\.frame)) else {
+            return nil
+        }
+        return screens[index]
     }
 
     static func defaultScreenFrame() -> CGRect? {

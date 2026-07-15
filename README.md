@@ -75,6 +75,12 @@ shortcut — the grid-overlay trigger and each fixed-size snap (halves, quarters
 Changes take effect immediately (no restart needed) and persist across launches. The menu-bar
 menu's "Keyboard Shortcuts" section always reflects your current bindings.
 
+## Multi-monitor support
+
+Every shortcut — the grid HUD and every fixed-size snap (halves, thirds, quarters, maximize,
+center) — always targets whichever display your mouse cursor is currently on, not a fixed "main
+screen." Move the cursor to another monitor before pressing a shortcut and it applies there.
+
 ## Launch at login
 
 Toggle "Launch at Login" from the menu-bar menu.
@@ -93,9 +99,10 @@ Toggle "Launch at Login" from the menu-bar menu.
 
 ## Testing
 
-The window-frame math, grid-selection math, shortcut persistence, and the resize→refocus behavior
-described above are covered by unit tests (no live window/Accessibility permission required to run
-them):
+The window-frame math, grid-selection math, shortcut persistence, resize→refocus behavior, and
+mouse-based multi-monitor screen selection (including boundary edge cases and negative-origin
+secondary displays) described above are covered by unit tests (no live window/Accessibility
+permission required to run them):
 
 ```bash
 swift test
