@@ -47,10 +47,32 @@ Divide lives in the menu bar (a grid icon). Click it for the menu, or use these 
 
 ### Grid overlay
 
-Press `⌃⌥D` to bring up a translucent grid over the screen your mouse is on. Click and drag across
-cells to select a region (it snaps to grid lines); release to move/resize the window that was
-frontmost when you pressed the shortcut into that region. A single click (no drag) snaps it to
-that one cell. Press `Esc` to cancel without changing anything.
+Press `⌃⌥D` to bring up a small, floating grid HUD (about 15% of your screen's width/height,
+centered on the screen your mouse is on) — the classic Divvy look, rather than a full-screen
+overlay. Click and drag across the small grid to select a region (it snaps to grid lines); the
+selection scales up proportionally to your full screen and is applied to the window that was
+frontmost when you pressed the shortcut. A single click (no drag) snaps it to that one cell.
+Press `Esc`, or click anywhere outside the HUD, to cancel without changing anything.
+
+After the resize, Divide re-activates and raises that same window, so it stays selected — you can
+immediately press `⌃⌥D` again (or any other shortcut) to keep refining the same window's size/position
+without having to re-click it first.
+
+## Customizing shortcuts
+
+Open **Preferences…** from the menu-bar menu (or `⌘,` while the menu is open) to rebind any
+shortcut — the grid-overlay trigger and each fixed-size snap (halves, quarters, maximize, center).
+
+- Click a shortcut field, then press the new key combination. It must include at least one of
+  `⌃` (Control), `⌥` (Option), or `⌘` (Command).
+- Press **Delete** while recording to clear that shortcut (disables it).
+- Press **Escape** while recording to cancel without changing it.
+- **Reset** restores one shortcut to its default; **Restore All Defaults** resets everything.
+- If you assign a combination that's already in use, Divide asks whether to reassign it — doing so
+  clears it from the other action so there's never a conflicting duplicate.
+
+Changes take effect immediately (no restart needed) and persist across launches. The menu-bar
+menu's "Keyboard Shortcuts" section always reflects your current bindings.
 
 ## Launch at login
 
@@ -68,8 +90,23 @@ Toggle "Launch at Login" from the menu-bar menu.
   `.app` bundle by `Scripts/build_app.sh`, then ad-hoc signed — required for any arm64 binary to
   execute on Apple Silicon.
 
+## Testing
+
+The window-frame math, grid-selection math, shortcut persistence, and the resize→refocus behavior
+described above are covered by unit tests (no live window/Accessibility permission required to run
+them):
+
+```bash
+swift test
+```
+
+Notably `Tests/DivideTests/OverlayControllerFocusTests.swift` pins down the "window stays selected
+after a HUD resize" behavior: it drives `OverlayController` with fake dependencies and asserts that
+resizing a window is always followed by a re-activate/raise call on that same window. If that
+behavior ever regresses, this test fails.
+
 ## Known limitations (v1)
 
-- Shortcuts are currently fixed, not user-remappable via a preferences UI.
 - Grid density is fixed at 6×6 (edit `GridView.columns`/`rows` to change, then rebuild).
 - No custom app icon yet (uses the default).
+- Shortcut key names in Preferences assume a US keyboard layout.

@@ -1,11 +1,17 @@
 import Cocoa
 
-final class StatusBarController: NSObject {
+final class StatusBarController: NSObject, NSMenuDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let overlay: OverlayController
+    private let onShowPreferences: () -> Void
 
-    init(overlay: OverlayController) {
+    private let showGridItem = NSMenuItem()
+    private var shortcutItems: [ShortcutAction: NSMenuItem] = [:]
+    private let launchItem = NSMenuItem()
+
+    init(overlay: OverlayController, onShowPreferences: @escaping () -> Void) {
         self.overlay = overlay
+        self.onShowPreferences = onShowPreferences
         super.init()
 
         if let button = statusItem.button {
@@ -13,9 +19,10 @@ final class StatusBarController: NSObject {
         }
 
         let menu = NSMenu()
+        menu.delegate = self
 
-        let showGridItem = NSMenuItem(title: "Show Grid (⌃⌥D)", action: #selector(showGrid), keyEquivalent: "")
         showGridItem.target = self
+        showGridItem.action = #selector(showGrid)
         menu.addItem(showGridItem)
 
         menu.addItem(.separator())
@@ -23,21 +30,23 @@ final class StatusBarController: NSObject {
         let shortcutsHeader = NSMenuItem(title: "Keyboard Shortcuts", action: nil, keyEquivalent: "")
         shortcutsHeader.isEnabled = false
         menu.addItem(shortcutsHeader)
-        for line in [
-            "⌃⌥←/→/↑/↓   Halves",
-            "⌃⌥U I J K   Quarters",
-            "⌃⌥Return    Maximize",
-            "⌃⌥C         Center"
-        ] {
-            let item = NSMenuItem(title: line, action: nil, keyEquivalent: "")
+
+        for action in ShortcutAction.allCases where action != .showGrid {
+            let item = NSMenuItem(title: action.title, action: nil, keyEquivalent: "")
             item.isEnabled = false
             menu.addItem(item)
+            shortcutItems[action] = item
         }
 
         menu.addItem(.separator())
 
-        let launchItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
+        let prefsItem = NSMenuItem(title: "Preferences…", action: #selector(showPreferences), keyEquivalent: ",")
+        prefsItem.target = self
+        menu.addItem(prefsItem)
+
+        launchItem.title = "Launch at Login"
         launchItem.target = self
+        launchItem.action = #selector(toggleLaunchAtLogin)
         launchItem.state = LaunchAtLogin.isEnabled ? .on : .off
         menu.addItem(launchItem)
 
@@ -52,15 +61,35 @@ final class StatusBarController: NSObject {
         menu.addItem(quitItem)
 
         statusItem.menu = menu
+        refreshDynamicTitles()
+    }
+
+    func menuWillOpen(_ menu: NSMenu) {
+        refreshDynamicTitles()
+        launchItem.state = LaunchAtLogin.isEnabled ? .on : .off
+    }
+
+    private func refreshDynamicTitles() {
+        let gridCombo = ShortcutStore.combo(for: .showGrid)
+        showGridItem.title = "Show Grid" + (gridCombo.map { " (\($0.displayString))" } ?? "")
+
+        for (action, item) in shortcutItems {
+            let combo = ShortcutStore.combo(for: action)
+            item.title = "\(action.title) — \(combo?.displayString ?? "—")"
+        }
     }
 
     @objc private func showGrid() {
         overlay.toggle()
     }
 
-    @objc private func toggleLaunchAtLogin(_ sender: NSMenuItem) {
+    @objc private func showPreferences() {
+        onShowPreferences()
+    }
+
+    @objc private func toggleLaunchAtLogin() {
         LaunchAtLogin.isEnabled.toggle()
-        sender.state = LaunchAtLogin.isEnabled ? .on : .off
+        launchItem.state = LaunchAtLogin.isEnabled ? .on : .off
     }
 
     @objc private func openAccessibilitySettings() {

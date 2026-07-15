@@ -56,6 +56,16 @@ final class HotKeyManager {
         hotKeyRefs.append(hotKeyRef)
         return true
     }
+
+    /// Unregisters every currently-registered hotkey so the full set can be rebuilt
+    /// (e.g. after the user edits shortcuts in Preferences).
+    func unregisterAll() {
+        for ref in hotKeyRefs {
+            if let ref = ref { UnregisterEventHotKey(ref) }
+        }
+        hotKeyRefs.removeAll()
+        handlers.removeAll()
+    }
 }
 
 /// Carbon modifier flag helpers (RegisterEventHotKey expects the old Carbon bit flags).

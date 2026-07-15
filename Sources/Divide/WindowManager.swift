@@ -5,6 +5,15 @@ import ApplicationServices
 /// the frontmost window of whatever application currently has focus.
 enum WindowManager {
 
+    /// A window we've captured to operate on, together with the app that owns
+    /// it — needed so we can re-activate that specific app (and raise this
+    /// specific window) after moving/resizing it, so it stays selected for
+    /// any follow-up shortcut.
+    struct FocusedWindow {
+        let axElement: AXUIElement
+        let app: NSRunningApplication
+    }
+
     static func isTrusted(promptIfNeeded: Bool) -> Bool {
         let key = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String
         let options: CFDictionary = [key: promptIfNeeded] as CFDictionary
@@ -12,7 +21,7 @@ enum WindowManager {
     }
 
     /// The currently focused window of the frontmost application (excluding Divide itself).
-    static func frontmostAppFocusedWindow() -> AXUIElement? {
+    static func frontmostFocusedWindow() -> FocusedWindow? {
         guard let runningApp = NSWorkspace.shared.frontmostApplication,
               runningApp.processIdentifier != ProcessInfo.processInfo.processIdentifier else {
             return nil
@@ -22,13 +31,13 @@ enum WindowManager {
         var focused: CFTypeRef?
         if AXUIElementCopyAttributeValue(axApp, kAXFocusedWindowAttribute as CFString, &focused) == .success,
            let focused = focused {
-            return (focused as! AXUIElement)
+            return FocusedWindow(axElement: (focused as! AXUIElement), app: runningApp)
         }
 
         var windowsValue: CFTypeRef?
         if AXUIElementCopyAttributeValue(axApp, kAXWindowsAttribute as CFString, &windowsValue) == .success,
            let windows = windowsValue as? [AXUIElement], let first = windows.first {
-            return first
+            return FocusedWindow(axElement: first, app: runningApp)
         }
         return nil
     }
@@ -50,5 +59,20 @@ enum WindowManager {
         AXUIElementSetAttributeValue(window, kAXPositionAttribute as CFString, positionValue)
         AXUIElementSetAttributeValue(window, kAXSizeAttribute as CFString, sizeValue)
         AXUIElementSetAttributeValue(window, kAXPositionAttribute as CFString, positionValue)
+    }
+
+    /// Re-activates `app` and raises/focuses `window`, so it remains the
+    /// selected window for any shortcut the user presses next. Without this,
+    /// moving a window via the Accessibility API doesn't change which app/window
+    /// the system considers frontmost, so a subsequent snap could apply to the
+    /// wrong window (or none, if focus reverted to Divide itself).
+    static func refocus(_ window: AXUIElement, app: NSRunningApplication) {
+        if #available(macOS 14.0, *) {
+            app.activate()
+        } else {
+            app.activate(options: [.activateIgnoringOtherApps])
+        }
+        AXUIElementPerformAction(window, kAXRaiseAction as CFString)
+        AXUIElementSetAttributeValue(window, kAXFocusedAttribute as CFString, kCFBooleanTrue)
     }
 }

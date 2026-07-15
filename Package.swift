@@ -8,6 +8,11 @@ let package = Package(
         .executableTarget(
             name: "Divide",
             path: "Sources/Divide"
+        ),
+        .testTarget(
+            name: "DivideTests",
+            dependencies: ["Divide"],
+            path: "Tests/DivideTests"
         )
     ]
 )
